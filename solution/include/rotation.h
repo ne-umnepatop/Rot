@@ -5,6 +5,6 @@
 #include <stddef.h>
 
 // Функция для поворота изображения на 90 градусов
-struct image* rotate_90(struct image const source);
+struct image* rotate_90(const struct image* source);
 
 #endif
