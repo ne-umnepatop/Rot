@@ -50,12 +50,11 @@ enum read_status from_bmp(FILE* in, struct image* img) {
     int padding = (4 - (img->width * 3) % 4) % 4;
     img->padding = (uint8_t*)calloc(padding, sizeof(uint8_t));
 
-    img->padding = padding;
-
     enum read_status status = read_pixels(in, img);
     if (status != READ_OK) {
         // Ошибка при чтении пикселей, освобождаем выделенную память
         free(img->data);
+        free(img->padding);
     }
 }
 
@@ -100,12 +99,9 @@ enum write_status to_bmp(FILE* out, const struct image* img) {
             return WRITE_MAIN_IMAGE_NATION_ERROR;
         }
         // Запись padding'а, если есть
-        for (int i = 0; i < padding; ++i) {
-            if (fputc(0, out) == EOF) {
-                return WRITE_PADDING_ERROR;
-            }
+        if (fwrite(img->padding, sizeof(uint8_t), padding, out) != padding) {
+            return WRITE_PADDING_ERROR;
         }
     }
-
     return WRITE_OK;
 }
