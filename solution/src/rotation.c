@@ -1,6 +1,6 @@
 #include "rotation.h"
 
-struct image* rotate(const struct image* source) {
+struct image* rotate_90(const struct image* source) {
     // Реализация поворота изображения на 90 градусов
     struct image* rotated = (struct image*)malloc(sizeof(struct image));
     rotated->width = source->height;
