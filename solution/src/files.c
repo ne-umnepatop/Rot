@@ -12,9 +12,17 @@ FILE* open_file(const char* filename, const char* mode, enum file_status* status
     if (file == NULL) {
         perror("Error opening file");
         *status = FILE_OPEN_ERROR;
-    } else {
+    } else {    
         *status = FILE_OK;
     }
 
     return file;
+}
+
+enum file_status close_file(FILE* file) {
+    if (fclose(file) == 0) {
+        return FILE_OK;
+    } else {
+        return FILE_CLOSE_ERROR;
+    }
 }
