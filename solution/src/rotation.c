@@ -10,7 +10,7 @@ struct image* rotate_90(const struct image* source) {
 
     if (rotated->data == NULL || rotated->padding == NULL) {
         // Handle memory allocation failure
-        // ...
+        return NULL;
     }
 
     for (size_t y = 0; y < rotated->height; ++y) {
