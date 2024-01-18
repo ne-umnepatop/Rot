@@ -1,4 +1,7 @@
 {
     "C_Cpp.default.compilerPath": "gcc.exe",
-    "CodeGPT.apiKey": "CodeGPT Plus Beta"
+    "CodeGPT.apiKey": "CodeGPT Plus Beta",
+    "files.associations": {
+        "files.h": "c"
+    }
 }
