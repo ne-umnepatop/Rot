@@ -1,26 +1,31 @@
 #include "rotation.h"
 
 struct image* rotate_90(const struct image* source) {
-    // Реализация поворота изображения на 90 градусов
-    struct image* rotated = (struct image*)malloc(sizeof(struct image));
+    struct image* rotated = (struct image*)calloc(sizeof(struct image));
+    if (rotated == NULL) {
+        // Handle memory allocation failure
+        free(source->data);
+        free(source->padding);
+        return NULL;
+    }
     rotated->width = source->height;
     rotated->height = source->width;
-    rotated->data = (struct pixel*)malloc(rotated->width * rotated->height * sizeof(struct pixel));
+    rotated->data = (struct pixel*)calloc(rotated->width * rotated->height, sizeof(struct pixel));
     rotated->padding = (uint8_t*)calloc(1, sizeof(uint8_t));
 
     if (rotated->data == NULL || rotated->padding == NULL) {
         // Handle memory allocation failure
+        free(rotated);
+        free(source->data);
+        free(source->padding);
         return NULL;
     }
 
-    for (size_t y = 0; y < rotated->height; ++y) {
-        for (size_t x = 0; x < rotated->width; ++x) {
-            rotated->data[y * rotated->width + x] = source->data[(source->height - x - 1) * source->width + y];
-        }
+    for (size_t i = 0; i < rotated->width * rotated->height; ++i) {
+        size_t x = i % rotated->width;
+        size_t y = i / rotated->width;
+        rotated->data[i] = source->data[(source->height - x - 1) * source->width + y];
     }
-
-    free(source->data);
-    free(source->padding);
 
     return rotated;
 }
