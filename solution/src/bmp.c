@@ -1,18 +1,21 @@
 #include "bmp.h"
 
-enum read_status read_pixels(FILE* in, struct image* img) { // Выделяю больше функций, потому что потому
+enum read_status read_pixels(FILE* in, struct image* img) {
     // на всякий я себе напомню:
     // in: указатель в input file stream.
     // img: указатель на image structure, куда я пиксели клал
-    // Чтение изображения пиксель за пикселем
+    // Чтение изображения целыми строками
     for (uint64_t y = 0; y < img->height; ++y) {
-        for (uint64_t x = 0; x < img->width; ++x) {
-            // Чтение компонент цвета пикселя
-            fread(&(img->data[y * img->width + x]), sizeof(struct pixel), 1, in);
+        // Чтение целой строки пикселей
+        size_t read_pixels = fread(&(img->data[y * img->width]), sizeof(struct pixel), img->width, in);
+        if (read_pixels != img->width) {
+            return READ_PIXELS_ERROR;
         }
-
         // Пропуск padding, если есть
-        fread(img->padding, 1, img->padding, in);
+        size_t read_padding = fread(img->padding, 1, img->padding, in);
+        if (read_padding != img->padding) {
+            return READ_PADDING_ERROR;
+        }
     }
 
     return READ_OK;
@@ -39,16 +42,21 @@ enum read_status from_bmp(FILE* in, struct image* img) {
     img->width = header.biWidth;
     img->height = header.biHeight;
 
-    if (img->width != 0 && img->height != 0) {
-        img->data = (struct pixel*)calloc(img->width * img->height, sizeof(struct pixel));
+    if (img->width == 0 || img->height == 0) {
+        return READ_INVALID_DIMENSIONS;
+    }
 
-        if (img->data == NULL) {
-            return READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
-        }
+    img->data = (struct pixel*)calloc(img->width * img->height, sizeof(struct pixel));
+    if (img->data == NULL) {
+        return READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
     }
 
     int padding = (4 - (img->width * 3) % 4) % 4;
     img->padding = (uint8_t*)calloc(padding, sizeof(uint8_t));
+    if (img->padding == NULL) {
+        free(img->data);
+        return READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
+    }
 
     enum read_status status = read_pixels(in, img);
     if (status != READ_OK) {
@@ -56,6 +64,8 @@ enum read_status from_bmp(FILE* in, struct image* img) {
         free(img->data);
         free(img->padding);
     }
+
+    return status;
 }
 
 enum write_status to_bmp(FILE* out, const struct image* img) {
@@ -66,7 +76,7 @@ enum write_status to_bmp(FILE* out, const struct image* img) {
         return WRITE_INVALID_PARAMETERS;
     }
 
-   // Заголовок BMP-файла
+// Заголовок BMP-файла
     struct bmp_header header = {
         .bfType = 0x4D42,            // Сигнатура "BM"
         .bfileSize = 0,              // Размер файла, заполнится позже
@@ -85,7 +95,7 @@ enum write_status to_bmp(FILE* out, const struct image* img) {
         .biClrImportant = 0          // Количество важных цветов (0 для true color)
     };
 
-    // Вычисление размера изображения и выделение памяти для данных BMP-файла
+ // Вычисление размера изображения и выделение памяти для данных BMP-файла
     int padding = (4 - (img->width * 3) % 4) % 4;
     header.biSizeImage = (img->width * 3 + padding) * img->height;
     header.bfileSize = header.biSizeImage + sizeof(struct bmp_header);
@@ -99,9 +109,11 @@ enum write_status to_bmp(FILE* out, const struct image* img) {
             return WRITE_MAIN_IMAGE_NATION_ERROR;
         }
         // Запись padding'а, если есть
-        if (fwrite(img->padding, sizeof(uint8_t), padding, out) != padding) {
+        size_t written_padding = fwrite(img->padding, sizeof(uint8_t), padding, out);
+        if (written_padding != padding) {
             return WRITE_PADDING_ERROR;
         }
     }
+
     return WRITE_OK;
 }

@@ -2,6 +2,7 @@
     "C_Cpp.default.compilerPath": "gcc.exe",
     "CodeGPT.apiKey": "CodeGPT Plus Beta",
     "files.associations": {
-        "files.h": "c"
+        "files.h": "c",
+        "*.c#codiumai_chat_diff": "c"
     }
 }

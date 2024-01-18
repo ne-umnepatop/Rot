@@ -35,6 +35,9 @@ enum read_status {
     READ_MEMORY_ERROR_ALLOCATION_PROBLEMS, // 4Гб оперативы всем хватит говорили они
     READ_HEAD_SOUND_ERROR, // ошибка чтения хедера
     READ_INVALID_INPUTING_PARAMETERS, // при вызове файла нас послали на 
+    READ_PADDING_ERROR,
+    READ_INVALID_DIMENSIONS,
+    READ_PIXELS_ERROR
     /* другие коды ошибок */
 };
 
