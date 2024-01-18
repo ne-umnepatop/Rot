@@ -20,7 +20,11 @@ FILE* open_file(const char* filename, const char* mode, enum file_status* status
 }
 
 enum file_status close_file(FILE* file) {
-    if (fclose(file) == 0) {
+    if (file == NULL) {
+        return FILE_INVALID_ARGUMENT;
+    }
+    if (fclose(file) == EOF) {
+        file = NULL;
         return FILE_OK;
     } else {
         return FILE_CLOSE_ERROR;
