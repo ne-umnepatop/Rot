@@ -2,11 +2,18 @@
 
 FILE* open_file(const char* filename, const char* mode, enum file_status* status) {
     // вернёт указатель file
-    if (filename == NULL || mode == NULL) {
+        if (filename == NULL || mode == NULL || status == NULL) {
         *status = FILE_INVALID_ARGUMENT;
         return NULL;
     }
     
+    // Check if the mode is a valid file opening mode
+    if (strcmp(mode, "r") != 0 && strcmp(mode, "w") != 0 && strcmp(mode, "a") != 0 && strcmp(mode, "rb") != 0 && strcmp(mode, "wb") != 0 && strcmp(mode, "ab") != 0) {
+        *status = FILE_INVALID_ARGUMENT;
+        return NULL;
+    }
+    
+
     FILE* file = fopen(filename, mode);
     
     if (file == NULL) {
@@ -25,8 +32,8 @@ enum file_status close_file(FILE* file) {
     }
     if (fclose(file) == EOF) {
         file = NULL;
-        return FILE_OK;
-    } else {
         return FILE_CLOSE_ERROR;
+    } else {
+        return FILE_OK;
     }
 }
