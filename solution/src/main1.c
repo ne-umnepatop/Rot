@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
                         free_image(&img);
                         free_image(&rotated);
                         return 0;
-                        
+
                     } else {
                         printf("Failed to write destination\n");
                     }
@@ -61,4 +61,4 @@ int main(int argc, char *argv[]) {
     } else {
         printf("Failed to open source\n");
     }
-    
+}
