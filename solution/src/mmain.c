@@ -12,9 +12,11 @@ int main(int argc, char *argv[]) {
     }
 
     // Открываю данное
-    FILE* file_in = open_file(argv[1], "r");
+    enum file_status status_in;
+    FILE* file_in = open_file(argv[1], "r", &status_in);
     if (file_in == NULL) {
         printf("Failed to open source\n");
+        printf(status_in);
         return 1;
     }
 
@@ -37,9 +39,11 @@ int main(int argc, char *argv[]) {
     }
 
     // Создаю выходной ( к сожалению только файл )
-    FILE* file_out = open_file(argv[2], "w");
+    enum file_status status_out;
+    FILE* file_out = open_file(argv[2], "w", &status_out);
     if (file_out == NULL) {
         printf("Failed to open destination\n");
+        printf(status_out);
         free_image(&img);
         free_image(rotated);
         close_file(file_in);
@@ -50,6 +54,8 @@ int main(int argc, char *argv[]) {
     enum write_status status_out = to_bmp(file_out, rotated);
     if (status_out != WRITE_OK) {
         printf("Failed to write destination\n");
+        printf(status_out);
+        return 1;
     }
 
     // Всё записал, сворачиваемся
