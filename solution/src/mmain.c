@@ -4,6 +4,7 @@
 #include "files.h"
 #include "bmp.h"
 #include "rotation.h"
+#include <string.h>
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {
@@ -15,9 +16,9 @@ int main(int argc, char *argv[]) {
     enum file_status status_in;
     FILE* file_in = open_file(argv[1], "r", &status_in);
     if (file_in == NULL) {
-        perror("Failed to open source");
+        fprintf(stderr, "Failed to open source: %s\n", strerror(status_in));
         printf("Error code: %d\n", status_in);
-        return 1;
+        return status_in;
     }
 
     // Перевожу файл bmp во внутренний image 
@@ -26,7 +27,7 @@ int main(int argc, char *argv[]) {
     if (status_in != READ_OK) {
         printf("Failed to translate bmp\n");
         close_file(file_in);
-        return 1;
+        return status_in;
     }
     printf("%d", status_in);
 
@@ -43,12 +44,12 @@ int main(int argc, char *argv[]) {
     enum file_status status_out;
     FILE* file_out = open_file(argv[2], "w", &status_out);
     if (file_out == NULL) {
-        perror("Failed to open destination");
+        fprintf(stderr, "Failed to open destination: %s\n", strerror(status_out));
         printf("Error code: %d\n", status_out);
         free_image(&img);
         free_image(rotated);
         close_file(file_in);
-        return 1;
+        return status_out;
     }
 
     // Буду записывать повёрнутое
@@ -56,20 +57,20 @@ int main(int argc, char *argv[]) {
     if (status_out != WRITE_OK) {
         printf("Failed to write destination\n");
         printf("%d", status_out);
-        return 1;
+        return status_out;
     }
 
     // Всё записал, сворачиваемся
     enum file_status close_status_in = close_file(file_in);
     if (close_status_in != FILE_OK) {
         printf("Failed to close source\n");
-        return 1;
+        return close_status_in;
     }
 
     enum file_status close_status_out = close_file(file_out);
     if (close_status_out != FILE_OK) {
         printf("Failed to close destination\n");
-        return 1;
+        return close_status_out;
     }
 
     free_image(&img);
