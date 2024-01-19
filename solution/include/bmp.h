@@ -33,11 +33,12 @@ enum read_status {
     READ_INVALID_BITS, // не 24
     READ_INVALID_HEADER, // заголовок так себе
     READ_MEMORY_ERROR_ALLOCATION_PROBLEMS, // 4Гб оперативы всем хватит говорили они
+    READ_PADDING_ERROR_ALLOCATION_PROBLEMS,
     READ_HEAD_SOUND_ERROR, // ошибка чтения хедера
     READ_INVALID_INPUTING_PARAMETERS, // при вызове файла нас послали на 
     READ_PADDING_ERROR,
     READ_INVALID_DIMENSIONS,
-    READ_PIXELS_ERROR
+    READ_PIXELS_ERROR,
     /* другие коды ошибок */
 };
 
@@ -49,8 +50,6 @@ enum write_status {
     WRITE_MAIN_IMAGE_NATION_ERROR // пишу изображение значит, а тут такое
     /* другие коды ошибок */
 };
-
-// TODO: Объявление других функций и структур для работы с BMP-файлами
 
 enum read_status from_bmp(FILE* in, struct image* img );
 

@@ -21,10 +21,7 @@ struct image {
 // Функция для создания изображения
 struct image* create_image(uint64_t width, uint64_t height);
 
-// Функция для деинициализации изображения
+// Теперь Добби свободен
 void free_image(struct image* img);
 
-// Другие функции для работы с изображением...
-
 #endif 
-

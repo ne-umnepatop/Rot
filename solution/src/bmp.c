@@ -17,7 +17,6 @@ enum read_status read_pixels(FILE* in, struct image* img) {
             return READ_PADDING_ERROR;
         }
     }
-
     return READ_OK;
 }
 
@@ -41,21 +40,18 @@ enum read_status from_bmp(FILE* in, struct image* img) {
     // Выделение памяти для изображения
     img->width = header.biWidth;
     img->height = header.biHeight;
-
     if (img->width == 0 || img->height == 0) {
         return READ_INVALID_DIMENSIONS;
     }
-
     img->data = (struct pixel*)calloc(img->width * img->height, sizeof(struct pixel));
     if (img->data == NULL) {
         return READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
     }
-
     int padding = (4 - (img->width * 3) % 4) % 4;
     img->padding = (uint8_t*)calloc(padding, sizeof(uint8_t));
     if (img->padding == NULL) {
         free(img->data);
-        return READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
+        return READ_PADDING_ERROR_ALLOCATION_PROBLEMS;
     }
 
     enum read_status status = read_pixels(in, img);

@@ -7,7 +7,7 @@ FILE* open_file(const char* filename, const char* mode, enum file_status* status
         return NULL;
     }
     
-    // Check if the mode is a valid file opening mode
+    // Режим открытия
     if (strcmp(mode, "r") != 0 && strcmp(mode, "w") != 0 && strcmp(mode, "a") != 0 && strcmp(mode, "rb") != 0 && strcmp(mode, "wb") != 0 && strcmp(mode, "ab") != 0) {
         *status = FILE_INVALID_ARGUMENT;
         return NULL;
@@ -17,12 +17,11 @@ FILE* open_file(const char* filename, const char* mode, enum file_status* status
     FILE* file = fopen(filename, mode);
     
     if (file == NULL) {
-        perror("Error opening file");
+        fprintf(stderr, "Error opening file\n");
         *status = FILE_OPEN_ERROR;
     } else {    
         *status = FILE_OK;
     }
-
     return file;
 }
 

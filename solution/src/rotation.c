@@ -3,7 +3,7 @@
 struct image* rotate_90(const struct image* source) {
     struct image* rotated = (struct image*)calloc(sizeof(struct image));
     if (rotated == NULL) {
-        // Handle memory allocation failure
+        // Проблема аллокации отрабатывается тут
         return NULL;
     }
     rotated->width = source->height;
@@ -12,7 +12,7 @@ struct image* rotate_90(const struct image* source) {
     rotated->padding = (uint8_t*)calloc(1, sizeof(uint8_t));
 
     if (rotated->data == NULL || rotated->padding == NULL) {
-        // Handle memory allocation failure
+        // Проблема аллокации отрабатывается тут
         free(rotated);
         return NULL;
     }
@@ -27,6 +27,6 @@ struct image* rotate_90(const struct image* source) {
             y++;
         }
     }
-
+    
     return rotated;
 }
