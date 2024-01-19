@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 struct image* create_image(uint64_t width, uint64_t height) {
-    struct image* img = (struct image*)malloc(sizeof(struct image));
+    struct image* img = (struct image*)сalloc(sizeof(*img));
     if (img == NULL) {
         // Обработка ошибки выделения памяти
         exit(EXIT_FAILURE);
@@ -10,7 +10,7 @@ struct image* create_image(uint64_t width, uint64_t height) {
 
     img->width = width;
     img->height = height;
-    img->data = (struct pixel*)malloc(width * height * sizeof(struct pixel));
+    img->data = (struct pixel*)сalloc(width * height * sizeof(*img->data));
     if (img->data == NULL) {
         // Обработка ошибки выделения памяти
         free(img);
