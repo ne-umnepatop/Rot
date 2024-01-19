@@ -15,8 +15,8 @@ int main(int argc, char *argv[]) {
     enum file_status status_in;
     FILE* file_in = open_file(argv[1], "r", &status_in);
     if (file_in == NULL) {
-        printf("Failed to open source\n");
-        printf(status_in);
+        perror("Failed to open source");
+        printf("Error code: %d\n", status_in);
         return 1;
     }
 
@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
         close_file(file_in);
         return 1;
     }
+    printf("%d", status_in);
 
     // Кручу-верчу
     struct image* rotated = rotate_90(&img);
@@ -42,8 +43,8 @@ int main(int argc, char *argv[]) {
     enum file_status status_out;
     FILE* file_out = open_file(argv[2], "w", &status_out);
     if (file_out == NULL) {
-        printf("Failed to open destination\n");
-        printf(status_out);
+        perror("Failed to open destination");
+        printf("Error code: %d\n", status_out);
         free_image(&img);
         free_image(rotated);
         close_file(file_in);
@@ -54,13 +55,23 @@ int main(int argc, char *argv[]) {
     enum write_status status_out = to_bmp(file_out, rotated);
     if (status_out != WRITE_OK) {
         printf("Failed to write destination\n");
-        printf(status_out);
+        printf("%d", status_out);
         return 1;
     }
 
     // Всё записал, сворачиваемся
     enum file_status close_status_in = close_file(file_in);
+    if (close_status_in != FILE_OK) {
+        printf("Failed to close source\n");
+        return 1;
+    }
+
     enum file_status close_status_out = close_file(file_out);
+    if (close_status_out != FILE_OK) {
+        printf("Failed to close destination\n");
+        return 1;
+    }
+
     free_image(&img);
     free_image(rotated);
 
