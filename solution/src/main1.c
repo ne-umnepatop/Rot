@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Load the source image
+    // Открываю данное
     const char* filename_in = argv[1];
     const char* mode_in = "r";
     enum file_status status_in;
