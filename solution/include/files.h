@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 enum file_status {
     FILE_OK = 0,
     FILE_OPEN_ERROR, // NULL пробрался подозрительно глубоко (не должно)

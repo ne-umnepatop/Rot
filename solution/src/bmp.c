@@ -5,15 +5,15 @@ enum read_status read_pixels(FILE* in, struct image* img) {
     // in: указатель в input file stream.
     // img: указатель на image structure, куда я пиксели клал
     // Чтение изображения целыми строками
-    for (uint64_t y = 0; y < img->height; ++y) {
+    for (uint32_t y = 0; y < img->height; ++y) {
         // Чтение целой строки пикселей
         size_t read_pixels = fread(&(img->data[y * img->width]), sizeof(struct pixel), img->width, in);
         if (read_pixels != img->width) {
             return READ_PIXELS_ERROR;
         }
         // Пропуск padding, если есть
-        size_t read_padding = fread(img->padding, 1, img->padding, in);
-        if (read_padding != img->padding) {
+        uint8_t read_padding = (uint8_t)fread(img->padding, 1, (size_t)img->padding, in);
+        if (read_padding != *(img->padding)) {
             return READ_PADDING_ERROR;
         }
     }
@@ -100,7 +100,7 @@ enum write_status to_bmp(FILE* out, const struct image* img) {
         return WRITE_HEADER_ERROR;
     }
     // Запись данных изображения в файл
-    for (uint64_t y = 0; y < img->height; ++y) {
+    for (uint32_t y = 0; y < img->height; ++y) {
         if (fwrite(&(img->data[y * img->width]), sizeof(struct pixel), img->width, out) != img->width) {
             return WRITE_MAIN_IMAGE_NATION_ERROR;
         }

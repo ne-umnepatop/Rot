@@ -1,8 +1,8 @@
 #include "image.h"
-#include <stdlib.h>
 
-struct image* create_image(uint64_t width, uint64_t height) {
-    struct image* img = (struct image*)сalloc(sizeof(*img));
+
+struct image* create_image(uint32_t width, uint32_t height) {
+    struct image* img = (struct image*)malloc(sizeof(*img));
     if (img == NULL) {
         // Обработка ошибки выделения памяти
         return NULL;
@@ -15,7 +15,7 @@ struct image* create_image(uint64_t width, uint64_t height) {
     free(img);
     return NULL;
     }
-    img->data = (struct pixel*)сalloc(width * height * sizeof(*img->data));
+    img->data = (struct pixel*)malloc(width * height * sizeof(*img->data));
     if (img->data == NULL) {
         // Обработка ошибки выделения памяти
         free(img);

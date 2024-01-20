@@ -1,15 +1,16 @@
 #include "rotation.h"
 
 struct image* rotate_90(const struct image* source) {
-    struct image* rotated = (struct image*)calloc(sizeof(struct image));
+    struct image* rotated = (struct image*)malloc(sizeof(struct image));
     if (rotated == NULL) {
         // Проблема аллокации отрабатывается тут
         return NULL;
     }
     rotated->width = source->height;
     rotated->height = source->width;
-    rotated->data = (struct pixel*)calloc(rotated->width * rotated->height, sizeof(struct pixel));
-    rotated->padding = (uint8_t*)calloc(1, sizeof(uint8_t));
+    // rotated->data = (struct pixel*)malloc(rotated->width * rotated->height * sizeof(struct pixel));
+    rotated->data = (struct pixel*)сalloc(rotated->width * rotated->height, sizeof(struct pixel));
+    rotated->padding = (uint8_t*)malloc(sizeof(uint8_t));
 
     if (rotated->data == NULL || rotated->padding == NULL) {
         // Проблема аллокации отрабатывается тут
