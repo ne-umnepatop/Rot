@@ -1,3 +1,6 @@
+#ifndef FILES_H
+#define FILES_H
+
 #include <stdio.h>
 #include <string.h>
 enum file_status {
@@ -8,3 +11,5 @@ enum file_status {
 };
 FILE* open_file(const char* filename, const char* mode, enum file_status* status);
 enum file_status close_file(FILE* file);
+
+#endif 
