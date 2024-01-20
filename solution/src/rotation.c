@@ -6,14 +6,16 @@ struct image* rotate_90(const struct image* source) {
         // Проблема аллокации отрабатывается тут
         return NULL;
     }
+    
     rotated->width = source->height;
     rotated->height = source->width;
-    // rotated->data = (struct pixel*)malloc(rotated->width * rotated->height * sizeof(struct pixel));
-    rotated->data = (struct pixel*)сalloc(rotated->width * rotated->height, sizeof(struct pixel));
+    
+    rotated->data = (struct pixel*)calloc(rotated->width * rotated->height, sizeof(struct pixel));
     rotated->padding = (uint8_t*)malloc(sizeof(uint8_t));
 
     if (rotated->data == NULL || rotated->padding == NULL) {
         // Проблема аллокации отрабатывается тут
+        free(rotated->data);
         free(rotated);
         return NULL;
     }
