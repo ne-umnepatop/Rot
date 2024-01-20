@@ -1,10 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "image.h"
 #include "files.h"
 #include "bmp.h"
 #include "rotation.h"
-#include <string.h>
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {
