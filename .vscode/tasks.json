@@ -9,7 +9,15 @@
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "-Iinclude/",
+                "-std=c17",
+                "-pedantic",
+                "-Wall",
+                "-Werror",
+                "-ggdb",
+                "-Wno-attributes",
+                
             ],
             "options": {
                 "cwd": "${fileDirname}"

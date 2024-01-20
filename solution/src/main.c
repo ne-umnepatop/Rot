@@ -1,4 +1,3 @@
-#include "image.h"
 #include "files.h"
 #include "bmp.h"
 #include "rotation.h"
