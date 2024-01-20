@@ -1,5 +1,6 @@
 {
     "configurations": [
+        
         {
             "name": "C/C++: gcc.exe сборка и отладка активного файла",
             "type": "cppdbg",

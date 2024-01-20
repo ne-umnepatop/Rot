@@ -3,6 +3,7 @@
     "CodeGPT.apiKey": "CodeGPT Plus Beta",
     "files.associations": {
         "files.h": "c",
-        "*.c#codiumai_chat_diff": "c"
+        "*.c#codiumai_chat_diff": "c",
+        "rotation.h": "c"
     }
 }

@@ -1,6 +1,6 @@
-#include "files.h"
-#include "bmp.h"
-#include "rotation.h"
+#include "../include/files.h"
+#include "../include/bmp.h"
+#include "../include/rotation.h"
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {
@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
 
     // Открываю данное
     enum file_status status_in;
-    FILE* file_in = open_file(argv[1], "r", &status_in);
+    FILE* file_in = open_file(argv[1], "rb", &status_in);
     if (file_in == NULL) {
         fprintf(stderr, "Failed to open source: %s\n", strerror(status_in));
         printf("Error code: %d\n", status_in);
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 
     // Создаю выходной ( к сожалению только файл )
     enum file_status status_out;
-    FILE* file_out = open_file(argv[2], "w", &status_out);
+    FILE* file_out = open_file(argv[2], "wb", &status_out);
     if (file_out == NULL) {
         fprintf(stderr, "Failed to open destination: %s\n", strerror(status_out));
         printf("Error code: %d\n", status_out);

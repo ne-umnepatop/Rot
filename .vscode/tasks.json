@@ -16,8 +16,7 @@
                 "-Wall",
                 "-Werror",
                 "-ggdb",
-                "-Wno-attributes",
-                
+                "-Wno-attributes"
             ],
             "options": {
                 "cwd": "${fileDirname}"
@@ -30,6 +29,13 @@
                 "isDefault": true
             },
             "detail": "Задача создана отладчиком."
+        },
+        {
+            "type": "cmake",
+            "label": "CMake: тест",
+            "command": "test",
+            "problemMatcher": [],
+            "detail": "Задача шаблона CMake тест"
         }
     ],
     "version": "2.0.0"
