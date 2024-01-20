@@ -23,11 +23,11 @@ int main(int argc, char *argv[]) {
 
     // Перевожу файл bmp во внутренний image 
     struct image img;
-    enum read_status status_in = from_bmp(file_in, &img);
-    if (status_in != READ_OK) {
+    enum read_status status_bmp = from_bmp(file_in, &img);
+    if (status_bmp != READ_OK) {
         printf("Failed to translate bmp\n");
         close_file(file_in);
-        return status_in;
+        return status_bmp;
     }
     printf("%d", status_in);
 
@@ -53,11 +53,11 @@ int main(int argc, char *argv[]) {
     }
 
     // Буду записывать повёрнутое
-    enum write_status status_out = to_bmp(file_out, rotated);
-    if (status_out != WRITE_OK) {
+    enum write_status status_write_out = to_bmp(file_out, rotated);
+    if (status_write_out != WRITE_OK) {
         printf("Failed to write destination\n");
-        printf("%d", status_out);
-        return status_out;
+        printf("%d", status_write_out);
+        return status_write_out;
     }
 
     // Всё записал, сворачиваемся
