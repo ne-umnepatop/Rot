@@ -7,6 +7,7 @@ int main(int argc, char *argv[]) {
         printf("Usage: ./image-transformer <source-image> <transformed-image>\n");
         return 1;
     }
+    struct pair *imgs = create_pair();
     // Открываю данное
     enum file_status status_in;
     FILE* file_in = open_file(argv[1], "rb", &status_in);
@@ -18,19 +19,19 @@ int main(int argc, char *argv[]) {
    
     // Перевожу файл bmp во внутренний image
 
-    struct image * img = from_bmp(file_in);
-    if (img->status != OK)
+    imgs->source = *from_bmp(file_in);
+    if ((&imgs->source)->status != OK)
     {
         printf("Failed to translate bmp\n");
-        printf("%d", img->status);
+        printf("%d", (&imgs->source)->status);
         close_file(file_in);
-        return img->status;
+        return (&imgs->source)->status;
     }
     // Кручу-верчу
-    fprintf(stderr, "STATE out bmp: %u\n", img->status);
-    struct image* rotated = rotate_90(img);
-    fprintf(stderr, "STATE out bmp: %u\n", img->status);
-    if (rotated == NULL) {
+    fprintf(stderr, "STATE out bmp: %u\n", (&imgs->source)->status);
+    imgs->output = *rotate_90((&imgs->source));
+    fprintf(stderr, "STATE out bmp: %u\n", (&imgs->source)->status);
+    if ((&imgs->output) == NULL) {
         printf("Failed to transpose\n");
         close_file(file_in);
         return 1;
@@ -42,19 +43,19 @@ int main(int argc, char *argv[]) {
     if (file_out == NULL) {
         fprintf(stderr, "Failed to open destination: %s\n", strerror(status_out));
         printf("Error code: %d\n", status_out);
-        free_image(img);
-        free_image(rotated);
+        free_image((&imgs->source));
+        free_image((&imgs->output));
         close_file(file_in);
         return status_out;
     }
     fprintf(stderr, "STATE: %d\n", 54);
     // Буду записывать повёрнутое
-    to_bmp(file_out, rotated);
-    if (img->status != OK)
+    to_bmp(file_out, (&imgs->output));
+    if ((&imgs->source)->status != OK)
     {
         printf("Failed to write destination\n");
-        printf("%d", img->status);
-        return img->status;
+        printf("%d", (&imgs->source)->status);
+        return (&imgs->source)->status;
     }
     fprintf(stderr, "STATE: %d\n", 55);
     // Всё записал, сворачиваемся
@@ -70,7 +71,7 @@ int main(int argc, char *argv[]) {
         return close_status_out;
     }
     fprintf(stderr, "STATE: %d\n", 57);
-    free_image(img);
+    free_image((&imgs->source));
  
     return 0;
 }

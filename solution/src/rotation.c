@@ -5,7 +5,7 @@ struct image* rotate_90(const struct image* source) {
         return NULL;
     }
     fprintf(stderr, "STATE in rot: %u\n", source->status);
-    struct image *rotated = create_image(source->width, source->height);
+    struct image *rotated = create_image(source->height, source->width);
     fprintf(stderr, "STATE in rot: %u\n", rotated->status);
     if (rotated == NULL) {
         // Проблема аллокации отрабатывается тут

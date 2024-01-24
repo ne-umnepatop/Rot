@@ -1,7 +1,6 @@
 #include "../include/image.h"
 
 struct image* create_image(uint32_t width, uint32_t height) {
-    fprintf(stderr, "Creating1\n");
     struct image* img = (struct image *)malloc(sizeof(struct image));
     if (img == NULL) {
         // Обработка ошибки выделения памяти
@@ -33,6 +32,16 @@ struct image* create_image(uint32_t width, uint32_t height) {
     img->status = OK;
 
     return img;
+}
+
+struct pair* create_pair() {
+    struct pair *imgs = (struct pair *)malloc(sizeof(struct pair));
+    if (imgs==NULL){
+        return NULL;
+    }
+    imgs->output = *create_image(100, 100);
+    imgs->source = *create_image(100, 100);
+    return imgs;
 }
 
 void free_image(struct image* img) {

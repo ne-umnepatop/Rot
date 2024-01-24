@@ -42,10 +42,17 @@ struct image {
     enum picture_status status;
 };
 
+struct pair {
+    struct image source;
+    struct image output;
+};
+
 // Функция для создания изображения
 struct image* create_image(uint32_t width, uint32_t height);
 
 // Теперь Добби свободен
 void free_image(struct image* img);
+
+struct pair *create_pair();
 
 #endif 
