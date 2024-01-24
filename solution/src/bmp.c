@@ -24,10 +24,9 @@ struct image* from_bmp(FILE *in) {
         return img;
     }
 
+    // Чтение пикселей с учетом padding
     uint32_t row_size = ROW_SIZE(img->width);
     uint8_t padding = PADDING(row_size);
-
-    // Чтение пикселей с учетом padding
     for (uint32_t y = 0; y < header.biHeight; y++)
     {
         fread(&img->data[y * header.biWidth], sizeof(struct pixel), header.biWidth, in);
