@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include "image.h"
 
-struct __attribute__((packed)) bmp_header
-{
+struct __attribute__((packed)) bmp_header{
     uint16_t bfType;
     uint32_t bfileSize;
     uint32_t bfReserved;
@@ -24,8 +23,7 @@ struct __attribute__((packed)) bmp_header
     uint32_t biClrImportant;
 };
 
-enum write_status
-{
+enum write_status{
     WRITE_OK = 0,
     WRITE_PIXEL_ERROR,
     WRITE_INVALID_PARAMETERS,     // ерунду писать питается, там 0 какие-то

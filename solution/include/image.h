@@ -13,8 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-enum picture_status
-{
+enum picture_status{
     OK = 0,
     READ_INVALID_SIGNATURE,                // сигнатура помойка
     READ_MEMORY_ERROR_ALLOCATION_PROBLEMS, // 4Гб оперативы всем хватит говорили они
