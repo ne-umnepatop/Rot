@@ -1,4 +1,4 @@
-#include "bmp.h"
+#include "../include/bmp.h"
 
 enum read_status read_pixels(FILE* in, struct image* img) {
     // на всякий я себе напомню:
@@ -47,7 +47,7 @@ enum read_status from_bmp(FILE* in, struct image* img) {
     if (img->data == NULL) {
         return READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
     }
-    int padding = (4 - (img->width * 3) % 4) % 4;
+    uint8_t padding = (4 - (img->width * 3) % 4) % 4;
     img->padding = (uint8_t*)calloc(padding, sizeof(uint8_t));
     if (img->padding == NULL) {
         free(img->data);

@@ -1,5 +1,4 @@
-#include "image.h"
-
+#include "../include/image.h"
 
 struct image* create_image(uint32_t width, uint32_t height) {
     struct image* img = (struct image*)malloc(sizeof(*img));

@@ -1,4 +1,4 @@
-#include "files.h"
+#include "../include/files.h"
 
 FILE* open_file(const char* filename, const char* mode, enum file_status* status) {
     // вернёт указатель file

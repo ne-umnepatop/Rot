@@ -1,6 +1,6 @@
-#include "files.h"
-#include "bmp.h"
-#include "rotation.h"
+#include "../include/files.h"
+#include "../include/bmp.h"
+#include "../include/rotation.h"
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {
