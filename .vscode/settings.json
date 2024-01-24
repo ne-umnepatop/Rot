@@ -4,7 +4,9 @@
     "files.associations": {
         "files.h": "c",
         "*.c#codiumai_chat_diff": "c",
-        "rotation.h": "c"
+        "rotation.h": "c",
+        "image.h": "c",
+        "stdlib.h": "c"
     },
     "ros.distro": "noetic"
 }

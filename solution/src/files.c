@@ -3,28 +3,24 @@
 FILE *open_file(const char *filename, const char *mode, enum file_status *status)
 {
     // вернёт указатель file
-    if (filename == NULL || mode == NULL || status == NULL)
-    {
+    if (filename == NULL || mode == NULL || status == NULL){
         *status = FILE_INVALID_ARGUMENT;
         return NULL;
     }
 
     // Режим открытия
-    if (strcmp(mode, "rb") != 0 && strcmp(mode, "wb") != 0)
-    {
+    if (strcmp(mode, "rb") != 0 && strcmp(mode, "wb") != 0){
         *status = FILE_INVALID_ARGUMENT;
         return NULL;
     }
 
     FILE *file = fopen(filename, mode);
 
-    if (file == NULL)
-    {
+    if (file == NULL){
         fprintf(stderr, "Error opening file\n");
         *status = FILE_OPEN_ERROR;
     }
-    else
-    {
+    else{
         *status = FILE_OK;
     }
     return file;
@@ -32,15 +28,13 @@ FILE *open_file(const char *filename, const char *mode, enum file_status *status
 
 enum file_status close_file(FILE *file)
 {
-    if (file == NULL)
-    {
+    if (file == NULL){
         return FILE_INVALID_ARGUMENT;
     }
     fprintf(stderr, "STATE in: %d\n", 60);
     int result = fclose(file);
     fprintf(stderr, "STATE in: %d\n", 60);
-    if (result == EOF)
-    {
+    if (result == EOF){
         return FILE_CLOSE_ERROR;
     }
     return FILE_OK;

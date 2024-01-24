@@ -53,7 +53,11 @@ struct __attribute__((packed)) bmp_header
 enum write_status
 {
     WRITE_OK = 0,
-    WRITE_ERROR
+    WRITE_PIXEL_ERROR,
+    WRITE_INVALID_PARAMETERS,     // ерунду писать питается, там 0 какие-то
+    WRITE_PADDING_ERROR,          // отступы не отступы
+    WRITE_HEADER_ERROR,           // заголовок не всему голова
+    WRITE_MAIN_IMAGE_NATION_ERROR // пишу изображение значит, а тут такое
 };
 
 struct image *from_bmp(FILE *in);

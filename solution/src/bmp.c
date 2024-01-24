@@ -40,7 +40,6 @@ struct image* from_bmp(FILE *in)
     return img;
 }
 
-
 enum write_status to_bmp(FILE *out, const struct image *img)
 {
     // Подготовка BMP заголовка
@@ -67,25 +66,20 @@ enum write_status to_bmp(FILE *out, const struct image *img)
     header.biClrImportant = 0;
 
     // Запись BMP заголовка
-    if (fwrite(&header, sizeof(struct bmp_header), 1, out) != 1)
-    {
-        return WRITE_ERROR; // Ошибка записи заголовка
+    if (fwrite(&header, sizeof(struct bmp_header), 1, out) != 1){
+        return WRITE_HEADER_ERROR; // Ошибка записи заголовка
     }
 
     // Запись пикселей с учетом padding
-    for (uint32_t y = 0; y < img->height; ++y)
-    {
-        if (fwrite(&img->data[y * img->width], sizeof(struct pixel), img->width, out) != img->width)
-        {
-            return WRITE_ERROR; // Ошибка записи пикселей
+    for (uint32_t y = 0; y < img->height; ++y){
+        if (fwrite(&img->data[y * img->width], sizeof(struct pixel), img->width, out) != img->width){
+            return WRITE_PIXEL_ERROR; // Ошибка записи пикселей
         }
 
         // Добавляем padding
-        for (uint32_t p = 0; p < padding; ++p)
-        {
-            if (fputc(0, out) == EOF)
-            {
-                return WRITE_ERROR; // Ошибка записи padding
+        for (uint32_t p = 0; p < padding; ++p){
+            if (fputc(0, out) == EOF){
+                return WRITE_PADDING_ERROR; // Ошибка записи padding
             }
         }
     }

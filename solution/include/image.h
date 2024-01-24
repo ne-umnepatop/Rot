@@ -18,10 +18,7 @@ enum picture_status
     READ_INVALID_DIMENSIONS,
     READ_PIXELS_ERROR,
     DISSAPPEARED,
-    WRITE_INVALID_PARAMETERS,     // ерунду писать питается, там 0 какие-то
-    WRITE_PADDING_ERROR,          // отступы не отступы
-    WRITE_HEADER_ERROR,           // заголовок не всему голова
-    WRITE_MAIN_IMAGE_NATION_ERROR // пишу изображение значит, а тут такое
+    
     /* другие коды ошибок */
 };
 
