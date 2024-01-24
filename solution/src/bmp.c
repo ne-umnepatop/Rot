@@ -44,20 +44,21 @@ enum write_status to_bmp(FILE *out, const struct image *img)
 {
     // Подготовка BMP заголовка
     struct bmp_header header;
-    header.bfType = BMP_SIGNATURE;
+    header.bfType = 0x4D42;
 
     // Рассчитываем размер строки с учетом padding
-    uint32_t row_size = ROW_SIZE(img);
-    uint32_t padding = CALCULATE_PADDING(row_size);
-    header.bfileSize = sizeof(struct bmp_header) + (row_size + padding) * img->height;
+    uint32_t row_size = ROW_SIZE(img->width);
+    uint32_t padding = PADDING(row_size);
+
+    header.bfileSize = sizeof(struct bmp_header) + (row_size + padding) * img->height; // капец, тут не 0
 
     header.bfReserved = 0;
     header.bOffBits = sizeof(struct bmp_header);
-    header.biSize = BMP_HEADER_SIZE;
+    header.biSize = 40;
     header.biWidth = img->width;
     header.biHeight = img->height;
     header.biPlanes = 1;
-    header.biBitCount = BITS_PER_PIXEL;
+    header.biBitCount = 24;
     header.biCompression = 0;
     header.biSizeImage = 0;
     header.biXPelsPerMeter = 0;
