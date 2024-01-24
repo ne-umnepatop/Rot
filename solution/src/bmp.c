@@ -37,28 +37,27 @@ enum read_status from_bmp(FILE* in, struct image* img) {
     // if (header.biBitCount != 24) {
     //     return READ_INVALID_BITS;
     // }
+    
     // Выделение памяти для изображения
-    img->width = header.biWidth;
-    img->height = header.biHeight;
-    if (img->width == 0 || img->height == 0) {
+    if (header.biWidth == 0 || header.biHeight == 0)
+    {
         return READ_INVALID_DIMENSIONS;
     }
-    img->data = (struct pixel*)calloc(img->width * img->height, sizeof(struct pixel));
+    img = create_image(header.biWidth, header.biHeight);
+    // img->data = (struct pixel*)calloc(img->width * img->height, sizeof(struct pixel));
     if (img->data == NULL) {
         return READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
     }
-    uint8_t padding = (4 - (img->width * 3) % 4) % 4;
-    img->padding = (uint8_t*)calloc(padding, sizeof(uint8_t));
-    if (img->padding == NULL) {
-        free(img->data);
+
+    if (img->padding == NULL)
+    {
         return READ_PADDING_ERROR_ALLOCATION_PROBLEMS;
     }
 
     enum read_status status = read_pixels(in, img);
     if (status != READ_OK) {
         // Ошибка при чтении пикселей, освобождаем выделенную память
-        free(img->data);
-        free(img->padding);
+        free_image(img);
     }
 
     return status;

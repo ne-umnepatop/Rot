@@ -11,13 +11,20 @@ struct image* create_image(uint32_t width, uint32_t height) {
     img->height = height;
     if (width == 0 || height == 0) {
     // Обработка ошибки нулевой ширины или высоты
-    free(img);
+    free_image(img);
     return NULL;
     }
-    img->data = (struct pixel *)malloc(width * height * sizeof(struct pixel));
+    img->data = (struct pixel *)calloc(width * height, sizeof(struct pixel));
     if (img->data == NULL) {
         // Обработка ошибки выделения памяти
-        free(img);
+        free_image(img);
+        return NULL;
+    }
+
+    uint8_t padding = (4 - (img->width * 3) % 4) % 4;
+    img->padding = (uint8_t*)calloc(padding, sizeof(uint8_t));
+    if (img->padding == NULL) {
+        free_image(img);
         return NULL;
     }
 
@@ -26,9 +33,10 @@ struct image* create_image(uint32_t width, uint32_t height) {
 
 void free_image(struct image* img) {
     if (img != NULL) {
-        free(img->data);
-        img->data = NULL;
+        if (img->data != NULL){
+            free(img->data);}
+        if (img->padding != NULL){
+            free(img->padding);}
         free(img);
-        img = NULL;
     }
 }

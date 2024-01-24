@@ -7,7 +7,7 @@ struct image* rotate_90(const struct image* source) {
     struct image* rotated = (struct image*)malloc(sizeof(struct image));
     if (rotated == NULL) {
         // Проблема аллокации отрабатывается тут
-        free_image(rotated);
+        // free_image(rotated);
         return NULL;
     }
     
@@ -19,9 +19,7 @@ struct image* rotate_90(const struct image* source) {
 
     if (rotated->data == NULL || rotated->padding == NULL) {
         // Проблема аллокации отрабатывается тут
-        free(rotated->data);
-        free(rotated->padding);
-        // free(rotated);
+        free_image(rotated);
         return NULL;
     }
 

@@ -17,9 +17,10 @@ int main(int argc, char *argv[]) {
         return status_in;
     }
 
-    // Перевожу файл bmp во внутренний image 
-    struct image img;
-    enum read_status status_bmp = from_bmp(file_in, &img);
+    // Перевожу файл bmp во внутренний image
+    struct image image;
+    struct image* img = &image;
+    enum read_status status_bmp = from_bmp(file_in, img);
     if (status_bmp != READ_OK) {
         printf("Failed to translate bmp\n");
         printf("%d", status_bmp);
@@ -29,10 +30,9 @@ int main(int argc, char *argv[]) {
     printf("%d", status_in);
 
     // Кручу-верчу
-    struct image* rotated = rotate_90(&img);
+    struct image* rotated = rotate_90(img);
     if (rotated == NULL) {
         printf("Failed to transpose\n");
-        // free_image(&img);
         close_file(file_in);
         return 1;
     }
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
     if (file_out == NULL) {
         fprintf(stderr, "Failed to open destination: %s\n", strerror(status_out));
         printf("Error code: %d\n", status_out);
-        free_image(&img);
+        free_image(img);
         free_image(rotated);
         close_file(file_in);
         return status_out;
@@ -70,8 +70,7 @@ int main(int argc, char *argv[]) {
         return close_status_out;
     }
 
-    free_image(&img);
+    free_image(img);
  
-
     return 0;
 }
