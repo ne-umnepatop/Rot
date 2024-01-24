@@ -1,11 +1,3 @@
-#ifndef PADDING
-#define PADDING(row_size) ((4 - ((row_size) % 4)) % 4)
-#endif
-
-#ifndef ROW_SIZE
-#define ROW_SIZE(width) (width * sizeof(struct pixel))
-#endif
-
 #ifndef BMP_H
 #define BMP_H
 

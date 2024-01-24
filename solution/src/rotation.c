@@ -1,11 +1,11 @@
 #include "../include/rotation.h"
 struct image* rotate_90(const struct image* source) {
-    if (source->status != OK){
+    if (source->status != OK) {
         return NULL;
     }
 
     struct image *rotated = create_image(source->height, source->width);
-    if (rotated->status!=OK){
+    if (rotated->status!=OK) {
         return rotated;
     }
 

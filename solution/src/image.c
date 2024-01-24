@@ -18,7 +18,9 @@ struct image* create_image(uint32_t width, uint32_t height) {
         return img;
     }
 
-    uint8_t padding = (4 - (img->width * 3) % 4) % 4;
+    uint32_t row_size = ROW_SIZE(img->width);
+    uint8_t padding = PADDING(row_size);
+    
     img->padding = (uint8_t*)calloc(padding, sizeof(uint8_t));
     if (img->padding == NULL){
         img->status = READ_PADDING_ERROR_ALLOCATION_PROBLEMS;
