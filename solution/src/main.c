@@ -47,9 +47,10 @@ int main(int argc, char *argv[]) {
         free_image((&imgs->output));
         return status_out;
     }
-    fprintf(stderr, "STATE: %d\n", 54);
+
     // Буду записывать повёрнутое
-    to_bmp(file_out, (&imgs->output));
+    to_bmp(file_out, &imgs->output);
+    fprintf(stderr, "STATE: %d\n", 544);
     if ((&imgs->source)->status != OK)
     {
         printf("Failed to write destination\n");

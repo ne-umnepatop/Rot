@@ -66,17 +66,30 @@ struct image* from_bmp(FILE *in)
     
     return img;
 }
+
 void to_bmp(FILE *out, const struct image *img)
 {
+
     if (out == NULL || img == NULL || img->width == 0 || img->height == 0)
     {
         ((struct image *)img)->status = WRITE_INVALID_PARAMETERS;
         return;
     }
+    if (img->status!=OK){
+        ((struct image *)img)->status = DISSAPPEARED;
+        return;
+    }
 
-    struct bmp_header header = {
+    uint32_t row_size = (img)->width * sizeof(struct pixel);
+    uint32_t padding = (4 - ((row_size) % 4)) % 4;
+    uint32_t file_size = (uint32_t)sizeof(struct bmp_header) + (row_size + padding) * img->height;
+
+    struct bmp_header header =
+    {
         .bfType = 0x4D42,
-        .bfileSize = 0,
+
+        .bfileSize = file_size, // ААААААААААААААААААААААААААААААААААААА
+
         .bfReserved = 0,
         .bOffBits = sizeof(struct bmp_header),
         .biSize = 40,
@@ -89,20 +102,36 @@ void to_bmp(FILE *out, const struct image *img)
         .biXPelsPerMeter = 0,
         .biYPelsPerMeter = 0,
         .biClrUsed = 0,
-        .biClrImportant = 0};
+        .biClrImportant = 0
+};
 
-    uint8_t padding = (4 - (img->width * 3) % 4) % 4;
+    // uint8_t padding = (uint8_t)((4 - (img->width * 3) % 4) % 4);
     header.biSizeImage = (img->width * 3 + padding) * img->height;
     header.bfileSize = header.biSizeImage + (uint32_t)sizeof(struct bmp_header);
 
-    if (fwrite(&header, sizeof(struct bmp_header), 1, out) != 1)
+    fprintf(stderr, "STATE: %d\n", 60);
+
+    fprintf(stderr, "STATE: %zu\n", sizeof(struct bmp_header));
+
+    size_t writing = fwrite(&header, sizeof(struct bmp_header), 1, out);
+
+    fprintf(stderr, "STATE: %zu\n", writing);
+
+    if (writing != 1)
     {
+
+        fprintf(stderr, "STATE: %d\n", 61);
         ((struct image *)img)->status = WRITE_HEADER_ERROR;
         return;
+    } else {
+        fprintf(stderr, "STATE: %d\n", 62);
     }
+
+    fprintf(stderr, "STATE: %d\n", 64);
 
     for (uint32_t y = 0; y < img->height; ++y)
     {
+        fprintf(stderr, "STATE: %d\n", 65 + y);
         if (img->data != NULL && img->padding != NULL) // Added check for img->data and img->padding
         {
             if (fwrite(&(img->data[y * img->width]), sizeof(struct pixel), img->width, out) != img->width)
