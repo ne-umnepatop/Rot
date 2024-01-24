@@ -92,9 +92,9 @@ enum write_status to_bmp(FILE* out, const struct image* img) {
     };
 
  // Вычисление размера изображения и выделение памяти для данных BMP-файла
-    int padding = (4 - (img->width * 3) % 4) % 4;
+    uint8_t padding = (4 - (img->width * 3) % 4) % 4;
     header.biSizeImage = (img->width * 3 + padding) * img->height;
-    header.bfileSize = header.biSizeImage + sizeof(struct bmp_header);
+    header.bfileSize = header.biSizeImage + (uint32_t)sizeof(struct bmp_header);
     // Запись заголовка в файл
     if (fwrite(&header, sizeof(struct bmp_header), 1, out) != 1) {
         return WRITE_HEADER_ERROR;
