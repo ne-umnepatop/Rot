@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "image.h"
 
+// Если что, это компилировалось не майкософтоским
 struct __attribute__((packed)) bmp_header{
     uint16_t bfType;
     uint32_t bfileSize;

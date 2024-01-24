@@ -1,4 +1,5 @@
 #include "../include/rotation.h"
+
 struct image* rotate_90(const struct image* source) {
     if (source->status != OK) {
         return NULL;
