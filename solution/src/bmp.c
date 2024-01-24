@@ -2,12 +2,6 @@
 
 struct image* from_bmp(FILE *in)
 {
-    if (in == NULL)
-    {
-        struct image* img = create_image(0, 0);
-        img->status = READ_INVALID_INPUTING_PARAMETERS;
-        return img;
-    }
     // Чтение заголовка BMP
     struct bmp_header header;
     if (fread(&header, sizeof(struct bmp_header), 1, in) != 1)
@@ -24,30 +18,11 @@ struct image* from_bmp(FILE *in)
         img->status = READ_INVALID_SIGNATURE;
         return img;
     }
-    // Проверка битовой глубины (должна быть 24 бита)
-    // if (header.biBitCount != 24) {
-    //     return READ_INVALID_BITS;
-    // }
-
-    // Выделение памяти для изображения
-    if (header.biWidth == 0 || header.biHeight == 0)
-    {
-        struct image* img = create_image(0, 0);
-        img->status = READ_INVALID_DIMENSIONS;
-        return img;
-    }
 
     struct image* img = create_image(header.biWidth, header.biHeight);
 
-    // img->data = (struct pixel*)calloc(img->width * img->height, sizeof(struct pixel));
-    if (img->data == NULL)
-    {
-        img->status = READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
-    }
-
-    if (img->padding == NULL)
-    {
-        img->status = READ_PADDING_ERROR_ALLOCATION_PROBLEMS;
+    if (img->status != OK){
+        return img;
     }
 
     uint32_t row_size = img-> width * sizeof(struct pixel);
@@ -61,8 +36,6 @@ struct image* from_bmp(FILE *in)
         // Пропускаем padding
         fseek(in, (long)padding, SEEK_CUR);
     }
-
-    img->status = OK;
     
     return img;
 }

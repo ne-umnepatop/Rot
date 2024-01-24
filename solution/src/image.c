@@ -3,28 +3,26 @@
 struct image* create_image(uint32_t width, uint32_t height) {
     struct image *img = (struct image *)malloc(sizeof(struct image));
     if (img == NULL) {
-        // Обработка ошибки выделения памяти
         return NULL;
     }
     if (width == 0 || height == 0) {
-    // Обработка ошибки нулевой ширины или высоты
-    free_image(img);
-    return NULL;
+        img->status = READ_INVALID_DIMENSIONS;
+        return img;
     }
+
     img->width = width;
     img->height = height;
     img->data = (struct pixel *)malloc(width * height * sizeof(struct pixel));
     if (img->data == NULL) {
-        // Обработка ошибки выделения памяти
-        free_image(img);
-        return NULL;
+        img->status = READ_PIXEL_ERROR_ALLOCATION_PROBLEMS;
+        return img;
     }
 
     uint8_t padding = (4 - (img->width * 3) % 4) % 4;
     img->padding = (uint8_t*)calloc(padding, sizeof(uint8_t));
-    if (img->padding == NULL) {
-        free_image(img);
-        return NULL;
+    if (img->padding == NULL){
+        img->status = READ_PADDING_ERROR_ALLOCATION_PROBLEMS;
+        return img;
     }
 
     img->status = OK;
