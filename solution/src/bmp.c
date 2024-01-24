@@ -34,9 +34,9 @@ enum read_status from_bmp(FILE* in, struct image* img) {
         return READ_INVALID_SIGNATURE;
     }
     // Проверка битовой глубины (должна быть 24 бита)
-    if (header.biBitCount != 24) {
-        return READ_INVALID_BITS;
-    }
+    // if (header.biBitCount != 24) {
+    //     return READ_INVALID_BITS;
+    // }
     // Выделение памяти для изображения
     img->width = header.biWidth;
     img->height = header.biHeight;
@@ -110,6 +110,6 @@ enum write_status to_bmp(FILE* out, const struct image* img) {
             return WRITE_PADDING_ERROR;
         }
     }
-
+    
     return WRITE_OK;
 }

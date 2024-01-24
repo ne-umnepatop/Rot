@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
     enum read_status status_bmp = from_bmp(file_in, &img);
     if (status_bmp != READ_OK) {
         printf("Failed to translate bmp\n");
+        printf("%d", status_bmp);
         close_file(file_in);
         return status_bmp;
     }
@@ -31,7 +32,7 @@ int main(int argc, char *argv[]) {
     struct image* rotated = rotate_90(&img);
     if (rotated == NULL) {
         printf("Failed to transpose\n");
-        free_image(&img);
+        // free_image(&img);
         close_file(file_in);
         return 1;
     }
@@ -70,7 +71,7 @@ int main(int argc, char *argv[]) {
     }
 
     free_image(&img);
-    free_image(rotated);
+ 
 
     return 0;
 }
