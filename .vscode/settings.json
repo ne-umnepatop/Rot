@@ -5,5 +5,6 @@
         "files.h": "c",
         "*.c#codiumai_chat_diff": "c",
         "rotation.h": "c"
-    }
+    },
+    "ros.distro": "noetic"
 }
