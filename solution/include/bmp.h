@@ -25,7 +25,7 @@ struct bmp_header {
     uint32_t biClrImportant;
 };
 
-void from_bmp(FILE *in, struct image *img);
+struct image *from_bmp(FILE *in);
 
 void to_bmp(FILE *out, const struct image *img);
 

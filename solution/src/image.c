@@ -1,20 +1,22 @@
 #include "../include/image.h"
 
 struct image* create_image(uint32_t width, uint32_t height) {
-    struct image *img = (struct image *)malloc(sizeof(struct image));
+    fprintf(stderr, "Creating1\n");
+    struct image* img = (struct image *)malloc(sizeof(struct image));
     if (img == NULL) {
         // Обработка ошибки выделения памяти
         return NULL;
     }
-
-    img->width = width;
-    img->height = height;
     if (width == 0 || height == 0) {
     // Обработка ошибки нулевой ширины или высоты
     free_image(img);
     return NULL;
     }
-    img->data = (struct pixel *)calloc(width * height, sizeof(struct pixel));
+    img->width = width;
+    img->height = height;
+    fprintf(stderr, "Creating2\n");
+    img->data = (struct pixel *)malloc(width * height * sizeof(struct pixel));
+    fprintf(stderr, "Created\n");
     if (img->data == NULL) {
         // Обработка ошибки выделения памяти
         free_image(img);
@@ -27,6 +29,8 @@ struct image* create_image(uint32_t width, uint32_t height) {
         free_image(img);
         return NULL;
     }
+
+    img->status = OK;
 
     return img;
 }

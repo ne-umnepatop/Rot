@@ -17,11 +17,8 @@ int main(int argc, char *argv[]) {
     }
    
     // Перевожу файл bmp во внутренний image
-    struct image image;
-    struct image* img = &image;
-    
-    from_bmp(file_in, img);
-    
+
+    struct image * img = from_bmp(file_in);
     if (img->status != OK)
     {
         printf("Failed to translate bmp\n");
@@ -29,10 +26,10 @@ int main(int argc, char *argv[]) {
         close_file(file_in);
         return img->status;
     }
-    printf("%d", status_in);
-    fprintf(stderr, "STATE: %d\n", 52);
     // Кручу-верчу
+    fprintf(stderr, "STATE out bmp: %u\n", img->status);
     struct image* rotated = rotate_90(img);
+    fprintf(stderr, "STATE out bmp: %u\n", img->status);
     if (rotated == NULL) {
         printf("Failed to transpose\n");
         close_file(file_in);

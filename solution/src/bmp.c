@@ -52,9 +52,11 @@
 //     img->status = OK;
 //     return;
 // }
-void from_bmp(FILE *in, struct image *img)
+struct image* from_bmp(FILE *in)
 {
-    if (in == NULL || img == NULL)
+    struct image image;
+    struct image *img = &image;
+    if (in == NULL)
     {
         img->status = READ_INVALID_INPUTING_PARAMETERS;
     }
@@ -94,7 +96,6 @@ void from_bmp(FILE *in, struct image *img)
 
     uint32_t row_size = img-> width * sizeof(struct pixel);
     uint32_t padding = ((4 - ((row_size) % 4)) % 4);
-
     // Чтение пикселей с учетом padding
     for (uint32_t y = 0; y < header.biHeight; ++y)
     {
@@ -104,7 +105,9 @@ void from_bmp(FILE *in, struct image *img)
         fseek(in, (long)padding, SEEK_CUR);
     }
 
-    return;
+    img->status = OK;
+    
+    return img;
 }
 void to_bmp(FILE *out, const struct image *img)
 {

@@ -1,10 +1,12 @@
 #include "../include/rotation.h"
 struct image* rotate_90(const struct image* source) {
+    fprintf(stderr, "STATE in rot: %u\n", source->status);
     if (source == NULL) {
         return NULL;
     }
-    
-    struct image* rotated = (struct image*)malloc(sizeof(struct image));
+    fprintf(stderr, "STATE in rot: %u\n", source->status);
+    struct image *rotated = create_image(source->width, source->height);
+    fprintf(stderr, "STATE in rot: %u\n", rotated->status);
     if (rotated == NULL) {
         // Проблема аллокации отрабатывается тут
         // free_image(rotated);
