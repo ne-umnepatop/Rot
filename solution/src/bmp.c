@@ -2,6 +2,9 @@
 
 void read_pixels(FILE *in, struct image *img)
 {
+    if (img->status != OK){
+        return;
+    }
     if (in == NULL || img == NULL)
     {
         img->status = READ_INVALID_INPUTING_PARAMETERS;
@@ -13,12 +16,17 @@ void read_pixels(FILE *in, struct image *img)
         free_image(img);
         return;
     }
+    if (img == NULL)
+    {
+        img->status = DISSAPPEARED;
+        return;
+    }
     for (uint32_t y = 0; y < img->height; ++y)
     {
         // Чтение целой строки пикселей
-        fprintf(stderr, "STATE: %d\n", 61);
         size_t read_pixels = fread(&(img->data[y * img->width]), sizeof(struct pixel), img->width, in);
-        fprintf(stderr, "STATE: %d\n", 611);
+
+        //fprintf(stderr, "STATE: %d\n", read_pixels);
         if (read_pixels != img->width)
         {
             img->status = READ_PIXELS_ERROR;
@@ -26,7 +34,9 @@ void read_pixels(FILE *in, struct image *img)
             return;
         }
         // Пропуск padding, если есть
-        fprintf(stderr, "STATE: %d\n", 6111);
+        fprintf(stderr, "STATE: %d\n", img->status);
+        fprintf(stderr, "STATE: %p\n", (void *)img->padding);
+
         if (fseek(in, (intptr_t)img->padding, SEEK_CUR) != 0)
         {
             img->status = READ_PADDING_ERROR;

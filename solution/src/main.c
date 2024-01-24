@@ -7,7 +7,6 @@ int main(int argc, char *argv[]) {
         printf("Usage: ./image-transformer <source-image> <transformed-image>\n");
         return 1;
     }
-    fprintf(stderr, "STATE: %d\n", 50);
     // Открываю данное
     enum file_status status_in;
     FILE* file_in = open_file(argv[1], "rb", &status_in);
@@ -16,13 +15,13 @@ int main(int argc, char *argv[]) {
         printf("Error code: %d\n", status_in);
         return status_in;
     }
-    fprintf(stderr, "STATE: %d\n", 51);
+   
     // Перевожу файл bmp во внутренний image
     struct image image;
     struct image* img = &image;
-    fprintf(stderr, "STATE: %d\n", 511);
+    
     from_bmp(file_in, img);
-    fprintf(stderr, "STATE: %d\n", 5111);
+    
     if (img->status != OK)
     {
         printf("Failed to translate bmp\n");
