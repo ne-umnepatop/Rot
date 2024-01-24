@@ -41,26 +41,25 @@ struct image* from_bmp(FILE *in) {
 
 enum write_status to_bmp(FILE *out, const struct image *img) {
     // Инит
-    struct bmp_header header;
-    // Рассчитываю размер строки с учетом padding
     uint32_t row_size = ROW_SIZE(img->width);
     uint8_t padding = PADDING(row_size);
-
-    header.bfileSize = sizeof(struct bmp_header) + (row_size + padding) * img->height; // капец, тут не 0
-    header.bfType = 0x4D42;
-    header.bfReserved = 0;
-    header.bOffBits = sizeof(struct bmp_header);
-    header.biSize = 40;
-    header.biWidth = img->width;
-    header.biHeight = img->height;
-    header.biPlanes = 1;
-    header.biBitCount = 24;
-    header.biCompression = 0;
-    header.biSizeImage = 0;
-    header.biXPelsPerMeter = 0;
-    header.biYPelsPerMeter = 0;
-    header.biClrUsed = 0;
-    header.biClrImportant = 0;
+    uint32_t bfileSize = sizeof(struct bmp_header) + (row_size + padding) * img->height; // капец, тут не 0
+    struct bmp_header header;
+    header.bfType           = 0x4D42;
+    header.biWidth          = img->width;
+    header.biHeight         = img->height;
+    header.bOffBits         = sizeof(struct bmp_header);
+    header.bfileSize        = bfileSize;
+    header.biSize           = 40;
+    header.biBitCount       = 24;
+    header.biPlanes         = 1;
+    header.bfReserved       = 0;
+    header.biCompression    = 0;
+    header.biSizeImage      = 0;
+    header.biXPelsPerMeter  = 0;
+    header.biYPelsPerMeter  = 0;
+    header.biClrUsed        = 0;
+    header.biClrImportant   = 0;
 
     // Запишу BMP заголовок
     if (fwrite(&header, sizeof(struct bmp_header), 1, out) != 1) {
@@ -68,13 +67,12 @@ enum write_status to_bmp(FILE *out, const struct image *img) {
     }
 
     // Накину пиксельности
-    for (uint32_t y = 0; y < img->height; ++y) {
+    for (uint32_t y = 0; y < img->height; y++) {
         if (fwrite(&img->data[y * img->width], sizeof(struct pixel), img->width, out) != img->width) {
             return WRITE_PIXEL_ERROR;
         }
-
         // paddение в ад
-        for (uint32_t p = 0; p < padding; ++p) {
+        for (uint32_t i = 0; i < padding; i++) {
             if (fputc(0, out) == EOF) {
                 return WRITE_PADDING_ERROR;
             }
