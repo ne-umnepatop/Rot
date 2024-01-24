@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "image.h"
-#pragma pack(push, 1)
+
 
 // Структура для заголовка BMP-файла
 struct bmp_header {
@@ -25,7 +25,7 @@ struct bmp_header {
     uint32_t biClrImportant;
 };
 
-#pragma pack(pop)
+
 
 enum read_status {
     READ_OK = 0,
