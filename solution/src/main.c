@@ -49,23 +49,24 @@ int main(int argc, char *argv[]) {
     }
 
     // Буду записывать повёрнутое
-    to_bmp(file_out, &imgs->output);
+    enum write_status stat_out = to_bmp(file_out, &imgs->output);
     fprintf(stderr, "STATE: %d\n", 544);
-    if ((&imgs->source)->status != OK)
+    if (stat_out != WRITE_OK)
     {
         printf("Failed to write destination\n");
         printf("%d", (&imgs->source)->status);
         return (&imgs->source)->status;
     }
     fprintf(stderr, "STATE: %d\n", 55);
-    // Всё записал, сворачиваемся
-    enum file_status close_status_in = close_file(file_in);
-    if (close_status_in != FILE_OK) {
-        printf("Failed to close source\n");
-        return close_status_in;
-    }
+    // // Всё записал, сворачиваемся
+    // enum file_status close_status_in = close_file(file_in);
+    // if (close_status_in != FILE_OK) {
+    //     printf("Failed to close source\n");
+    //     return close_status_in;
+    // }
     fprintf(stderr, "STATE: %d\n", 56);
     enum file_status close_status_out = close_file(file_out);
+    fprintf(stderr, "STATE: %d\n", 566);
     if (close_status_out != FILE_OK) {
         printf("Failed to close destination\n");
         return close_status_out;

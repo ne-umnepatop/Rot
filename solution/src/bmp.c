@@ -67,92 +67,55 @@ struct image* from_bmp(FILE *in)
     return img;
 }
 
-void to_bmp(FILE *out, const struct image *img)
+
+enum write_status to_bmp(FILE *out, const struct image *img)
 {
+    // Подготовка BMP заголовка
+    struct bmp_header header;
+    header.bfType = BMP_SIGNATURE;
 
-    if (out == NULL || img == NULL || img->width == 0 || img->height == 0)
+    // Рассчитываем размер строки с учетом padding
+    uint32_t row_size = ROW_SIZE(img);
+    uint32_t padding = CALCULATE_PADDING(row_size);
+    header.bfileSize = sizeof(struct bmp_header) + (row_size + padding) * img->height;
+
+    header.bfReserved = 0;
+    header.bOffBits = sizeof(struct bmp_header);
+    header.biSize = BMP_HEADER_SIZE;
+    header.biWidth = img->width;
+    header.biHeight = img->height;
+    header.biPlanes = 1;
+    header.biBitCount = BITS_PER_PIXEL;
+    header.biCompression = 0;
+    header.biSizeImage = 0;
+    header.biXPelsPerMeter = 0;
+    header.biYPelsPerMeter = 0;
+    header.biClrUsed = 0;
+    header.biClrImportant = 0;
+
+    // Запись BMP заголовка
+    if (fwrite(&header, sizeof(struct bmp_header), 1, out) != 1)
     {
-        ((struct image *)img)->status = WRITE_INVALID_PARAMETERS;
-        return;
-    }
-    if (img->status!=OK){
-        ((struct image *)img)->status = DISSAPPEARED;
-        return;
-    }
-
-    uint32_t row_size = (img)->width * sizeof(struct pixel);
-    uint32_t padding = (4 - ((row_size) % 4)) % 4;
-    uint32_t file_size = (uint32_t)sizeof(struct bmp_header) + (row_size + padding) * img->height;
-
-    struct bmp_header header =
-    {
-        .bfType = 0x4D42,
-
-        .bfileSize = file_size, // ААААААААААААААААААААААААААААААААААААА
-
-        .bfReserved = 0,
-        .bOffBits = sizeof(struct bmp_header),
-        .biSize = 40,
-        .biWidth = (uint32_t)img->width,
-        .biHeight = (uint32_t)img->height,
-        .biPlanes = 1,
-        .biBitCount = 24,
-        .biCompression = 0,
-        .biSizeImage = 0,
-        .biXPelsPerMeter = 0,
-        .biYPelsPerMeter = 0,
-        .biClrUsed = 0,
-        .biClrImportant = 0
-};
-
-    // uint8_t padding = (uint8_t)((4 - (img->width * 3) % 4) % 4);
-    header.biSizeImage = (img->width * 3 + padding) * img->height;
-    header.bfileSize = header.biSizeImage + (uint32_t)sizeof(struct bmp_header);
-
-    fprintf(stderr, "STATE: %d\n", 60);
-
-    fprintf(stderr, "STATE: %zu\n", sizeof(struct bmp_header));
-
-    size_t writing = fwrite(&header, sizeof(struct bmp_header), 1, out);
-
-    fprintf(stderr, "STATE: %zu\n", writing);
-
-    if (writing != 1)
-    {
-
-        fprintf(stderr, "STATE: %d\n", 61);
-        ((struct image *)img)->status = WRITE_HEADER_ERROR;
-        return;
-    } else {
-        fprintf(stderr, "STATE: %d\n", 62);
+        return WRITE_ERROR; // Ошибка записи заголовка
     }
 
-    fprintf(stderr, "STATE: %d\n", 64);
-
+    // Запись пикселей с учетом padding
     for (uint32_t y = 0; y < img->height; ++y)
     {
-        fprintf(stderr, "STATE: %d\n", 65 + y);
-        if (img->data != NULL && img->padding != NULL) // Added check for img->data and img->padding
+        if (fwrite(&img->data[y * img->width], sizeof(struct pixel), img->width, out) != img->width)
         {
-            if (fwrite(&(img->data[y * img->width]), sizeof(struct pixel), img->width, out) != img->width)
-            {
-                ((struct image *)img)->status = WRITE_MAIN_IMAGE_NATION_ERROR;
-                return;
-            }
-            size_t written_padding = fwrite(img->padding, sizeof(uint8_t), padding, out);
-            if (written_padding != padding)
-            {
-                ((struct image *)img)->status = WRITE_PADDING_ERROR;
-                return;
-            }
+            return WRITE_ERROR; // Ошибка записи пикселей
         }
-        else
+
+        // Добавляем padding
+        for (uint32_t p = 0; p < padding; ++p)
         {
-            ((struct image *)img)->status = WRITE_INVALID_PARAMETERS;
-            return;
+            if (fputc(0, out) == EOF)
+            {
+                return WRITE_ERROR; // Ошибка записи padding
+            }
         }
     }
 
-    ((struct image *)img)->status = OK;
-    return;
+    return WRITE_OK;
 }
