@@ -1,57 +1,57 @@
 #include "../include/bmp.h"
 
-void read_pixels(FILE *in, struct image *img, struct bmp_header header)
-{
-    if (img->status != OK){
-        return;
-    }
-    if (in == NULL || img == NULL)
-    {
-        img->status = READ_INVALID_INPUTING_PARAMETERS;
-        return;
-    }
-    if (img->data == NULL || img->padding == NULL)
-    {
-        img->status = READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
-        free_image(img);
-        return;
-    }
-    if (img == NULL)
-    {
-        img->status = DISSAPPEARED;
-        return;
-    }
-    for (uint32_t y = 0; y < img->height; ++y)
-    {
-        // Чтение целой строки пикселей
-        size_t read_pixels = fread(&(img->data[y * img->width]), sizeof(struct pixel), img->width, in);
+// void read_pixels(FILE *in, struct image *img, struct bmp_header header)
+// {
+//     if (img->status != OK){
+//         return;
+//     }
+//     if (in == NULL || img == NULL)
+//     {
+//         img->status = READ_INVALID_INPUTING_PARAMETERS;
+//         return;
+//     }
+//     if (img->data == NULL || img->padding == NULL)
+//     {
+//         img->status = READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
+//         free_image(img);
+//         return;
+//     }
+//     if (img == NULL)
+//     {
+//         img->status = DISSAPPEARED;
+//         return;
+//     }
+//     for (uint32_t y = 0; y < img->height; ++y)
+//     {
+//         // Чтение целой строки пикселей
+//         size_t read_pixels = fread(&(img->data[y * img->width]), sizeof(struct pixel), img->width, in);
 
-        //fprintf(stderr, "STATE: %d\n", read_pixels);
-        if (read_pixels != img->width)
-        {
-            img->status = READ_PIXELS_ERROR;
-            free_image(img);
-            return;
-        }
-        // Пропуск padding, если есть
-        fprintf(stderr, "STATE: %d\n", img->status);
-        fprintf(stderr, "STATE: %p\n", (void *)img->padding);
+//         //fprintf(stderr, "STATE: %d\n", read_pixels);
+//         if (read_pixels != img->width)
+//         {
+//             img->status = READ_PIXELS_ERROR;
+//             free_image(img);
+//             return;
+//         }
+//         // Пропуск padding, если есть
+//         fprintf(stderr, "STATE: %d\n", img->status);
+//         fprintf(stderr, "STATE: %p\n", (void *)img->padding);
 
-        uint32_t row_size = img->width * sizeof(struct pixel);
-        uint32_t padding = (4 - ((row_size) % 4)) % 4;
+//         uint32_t row_size = img->width * sizeof(struct pixel);
+//         uint32_t padding = (4 - ((row_size) % 4)) % 4;
 
-        // Чтение пикселей с учетом padding
-        for (uint32_t y = 0; y < header.biHeight; ++y)
-        {
-            fread(&(*img)->data[y * header.biWidth], sizeof(struct pixel), header.biWidth, in);
+//         // Чтение пикселей с учетом padding
+//         for (uint32_t y = 0; y < header.biHeight; ++y)
+//         {
+//             fread(&(*img)->data[y * header.biWidth], sizeof(struct pixel), header.biWidth, in);
 
-            // Пропускаем padding
-            fseek(in, (long)padding, SEEK_CUR);
-        }
-    }
-    img->status = OK;
-    return;
-}
+//             // Пропускаем padding
+//             fseek(in, (long)padding, SEEK_CUR);
+//         }
+//     }
+//     img->status = OK;
+//     return;
+// }
 void from_bmp(FILE *in, struct image *img)
 {
     if (in == NULL || img == NULL)
@@ -92,11 +92,16 @@ void from_bmp(FILE *in, struct image *img)
         img->status = READ_PADDING_ERROR_ALLOCATION_PROBLEMS;
     }
 
-    read_pixels(in, img, header);
-    if (img->status != OK)
+    uint32_t row_size = img-> width * sizeof(struct pixel);
+    uint32_t padding = ((4 - ((row_size) % 4)) % 4);
+
+    // Чтение пикселей с учетом padding
+    for (uint32_t y = 0; y < header.biHeight; ++y)
     {
-        // Ошибка при чтении пикселей, освобождаем выделенную память
-        free_image(img);
+        fread(&img->data[y * header.biWidth], sizeof(struct pixel), header.biWidth, in);
+
+        // Пропускаем padding
+        fseek(in, (long)padding, SEEK_CUR);
     }
 
     return;
