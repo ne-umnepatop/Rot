@@ -3,11 +3,14 @@
 #include "../include/rotation.h"
 
 int main(int argc, char *argv[]) {
+
     if (argc != 3) {
         printf("Usage: ./image-transformer <source-image> <transformed-image>\n");
         return 1;
     }
+
     struct pair *imgs = create_pair();
+
     // Открываю данное
     enum file_status status_in;
     FILE* file_in = open_file(argv[1], "rb", &status_in);
@@ -17,26 +20,23 @@ int main(int argc, char *argv[]) {
         return status_in;
     }
    
-    // Перевожу файл bmp во внутренний image
+    // Перевожу исходник bmp во внутренний image
 
     imgs->source = *from_bmp(file_in);
-    if ((&imgs->source)->status != OK)
-    {
+    if ((&imgs->source)->status != OK){
         printf("Failed to translate bmp\n");
         printf("%d", (&imgs->source)->status);
-        close_file(file_in);
         return (&imgs->source)->status;
     }
+    close_file(file_in);
+
     // Кручу-верчу
-    fprintf(stderr, "STATE out bmp: %u\n", (&imgs->source)->status);
     imgs->output = *rotate_90((&imgs->source));
-    fprintf(stderr, "STATE out bmp: %u\n", (&imgs->source)->status);
     if ((&imgs->output) == NULL) {
         printf("Failed to transpose\n");
-        close_file(file_in);
         return 1;
     }
-    fprintf(stderr, "STATE: %d\n", 53);
+
     // Создаю выходной ( к сожалению только файл )
     enum file_status status_out;
     FILE* file_out = open_file(argv[2], "wb", &status_out);
@@ -45,7 +45,6 @@ int main(int argc, char *argv[]) {
         printf("Error code: %d\n", status_out);
         free_image((&imgs->source));
         free_image((&imgs->output));
-        close_file(file_in);
         return status_out;
     }
     fprintf(stderr, "STATE: %d\n", 54);

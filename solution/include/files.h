@@ -10,7 +10,9 @@ enum file_status {
     FILE_CLOSE_ERROR, // хрень какая-то, посмотрим потом, откуда
     FILE_INVALID_ARGUMENT // нас послали на NULL
 };
+
 FILE* open_file(const char* filename, const char* mode, enum file_status* status);
+
 enum file_status close_file(FILE* file);
 
 #endif 

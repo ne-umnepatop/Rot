@@ -8,7 +8,7 @@ FILE* open_file(const char* filename, const char* mode, enum file_status* status
     }
     
     // Режим открытия
-    if (strcmp(mode, "r") != 0 && strcmp(mode, "w") != 0 && strcmp(mode, "a") != 0 && strcmp(mode, "rb") != 0 && strcmp(mode, "wb") != 0 && strcmp(mode, "ab") != 0) {
+    if ( strcmp(mode, "rb") != 0 && strcmp(mode, "wb") != 0) {
         *status = FILE_INVALID_ARGUMENT;
         return NULL;
     }

@@ -1,76 +1,28 @@
 #include "../include/bmp.h"
 
-// void read_pixels(FILE *in, struct image *img, struct bmp_header header)
-// {
-//     if (img->status != OK){
-//         return;
-//     }
-//     if (in == NULL || img == NULL)
-//     {
-//         img->status = READ_INVALID_INPUTING_PARAMETERS;
-//         return;
-//     }
-//     if (img->data == NULL || img->padding == NULL)
-//     {
-//         img->status = READ_MEMORY_ERROR_ALLOCATION_PROBLEMS;
-//         free_image(img);
-//         return;
-//     }
-//     if (img == NULL)
-//     {
-//         img->status = DISSAPPEARED;
-//         return;
-//     }
-//     for (uint32_t y = 0; y < img->height; ++y)
-//     {
-//         // Чтение целой строки пикселей
-//         size_t read_pixels = fread(&(img->data[y * img->width]), sizeof(struct pixel), img->width, in);
-
-//         //fprintf(stderr, "STATE: %d\n", read_pixels);
-//         if (read_pixels != img->width)
-//         {
-//             img->status = READ_PIXELS_ERROR;
-//             free_image(img);
-//             return;
-//         }
-//         // Пропуск padding, если есть
-//         fprintf(stderr, "STATE: %d\n", img->status);
-//         fprintf(stderr, "STATE: %p\n", (void *)img->padding);
-
-//         uint32_t row_size = img->width * sizeof(struct pixel);
-//         uint32_t padding = (4 - ((row_size) % 4)) % 4;
-
-//         // Чтение пикселей с учетом padding
-//         for (uint32_t y = 0; y < header.biHeight; ++y)
-//         {
-//             fread(&(*img)->data[y * header.biWidth], sizeof(struct pixel), header.biWidth, in);
-
-//             // Пропускаем padding
-//             fseek(in, (long)padding, SEEK_CUR);
-//         }
-//     }
-//     img->status = OK;
-//     return;
-// }
 struct image* from_bmp(FILE *in)
 {
-    struct image image;
-    struct image *img = &image;
     if (in == NULL)
     {
+        struct image* img = create_image(0, 0);
         img->status = READ_INVALID_INPUTING_PARAMETERS;
+        return img;
     }
     // Чтение заголовка BMP
     struct bmp_header header;
     if (fread(&header, sizeof(struct bmp_header), 1, in) != 1)
     {
+        struct image* img = create_image(0, 0);
         img->status = READ_HEAD_SOUND_ERROR;
+        return img;
     }
 
     // Проверка сигнатуры BMP
     if (header.bfType != 0x4D42)
     {
+        struct image* img = create_image(0, 0);
         img->status = READ_INVALID_SIGNATURE;
+        return img;
     }
     // Проверка битовой глубины (должна быть 24 бита)
     // if (header.biBitCount != 24) {
@@ -80,9 +32,13 @@ struct image* from_bmp(FILE *in)
     // Выделение памяти для изображения
     if (header.biWidth == 0 || header.biHeight == 0)
     {
+        struct image* img = create_image(0, 0);
         img->status = READ_INVALID_DIMENSIONS;
+        return img;
     }
-    img = create_image(header.biWidth, header.biHeight);
+
+    struct image* img = create_image(header.biWidth, header.biHeight);
+
     // img->data = (struct pixel*)calloc(img->width * img->height, sizeof(struct pixel));
     if (img->data == NULL)
     {
@@ -96,8 +52,9 @@ struct image* from_bmp(FILE *in)
 
     uint32_t row_size = img-> width * sizeof(struct pixel);
     uint32_t padding = ((4 - ((row_size) % 4)) % 4);
+
     // Чтение пикселей с учетом padding
-    for (uint32_t y = 0; y < header.biHeight; ++y)
+    for (uint32_t y = 0; y < header.biHeight; y++)
     {
         fread(&img->data[y * header.biWidth], sizeof(struct pixel), header.biWidth, in);
 
