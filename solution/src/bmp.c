@@ -1,6 +1,6 @@
 #include "../include/bmp.h"
 
-void read_pixels(FILE *in, struct image *img)
+void read_pixels(FILE *in, struct image *img, struct bmp_header header)
 {
     if (img->status != OK){
         return;
@@ -37,11 +37,16 @@ void read_pixels(FILE *in, struct image *img)
         fprintf(stderr, "STATE: %d\n", img->status);
         fprintf(stderr, "STATE: %p\n", (void *)img->padding);
 
-        if (fseek(in, (intptr_t)img->padding, SEEK_CUR) != 0)
+        uint32_t row_size = img->width * sizeof(struct pixel);
+        uint32_t padding = (4 - ((row_size) % 4)) % 4;
+
+        // Чтение пикселей с учетом padding
+        for (uint32_t y = 0; y < header.biHeight; ++y)
         {
-            img->status = READ_PADDING_ERROR;
-            free_image(img);
-            return;
+            fread(&(*img)->data[y * header.biWidth], sizeof(struct pixel), header.biWidth, in);
+
+            // Пропускаем padding
+            fseek(in, (long)padding, SEEK_CUR);
         }
     }
     img->status = OK;
@@ -87,7 +92,7 @@ void from_bmp(FILE *in, struct image *img)
         img->status = READ_PADDING_ERROR_ALLOCATION_PROBLEMS;
     }
 
-    read_pixels(in, img);
+    read_pixels(in, img, header);
     if (img->status != OK)
     {
         // Ошибка при чтении пикселей, освобождаем выделенную память
